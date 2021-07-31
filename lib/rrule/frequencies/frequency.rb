@@ -27,13 +27,21 @@ module RRule
         end
       end
 
-      generator.combine_dates_and_times(possible_days_of_year, timeset).tap do
+      if self.class.name == "RRule::Hourly"
+        d = @current_date
         advance
+        [d]
+      else
+        generator.combine_dates_and_times(possible_days_of_year, timeset).tap do
+          advance
+        end
       end
     end
 
     def self.for_options(options)
       case options[:freq]
+      when 'HOURLY'
+        Hourly
       when 'DAILY'
         Daily
       when 'WEEKLY'
